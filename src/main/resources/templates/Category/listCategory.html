@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кабинет администратора</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+</head>
+<body>
+<div class="container">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <a href="/admin" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+            <span class="fs-4">Личный кабинет администратора</span>
+        </a>
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a href="/admin/category" class="nav-link">Список категорий</a></li>
+            <li class="nav-item"><a href="/admin" class="nav-link">Список товаров</a></li>
+        </ul>
+        <div class="col-md-1 text-end">
+            <form method="post" th:action="@{/logout}">
+                <input type="submit" class="btn btn-primary" value="Выйти">
+            </form>
+        </div>
+    </header>
+</div>
+<div class="container">
+    <h3>Список категорий <a class="ms-3" href="#" data-bs-toggle="modal" data-bs-target="#addCategory"><i class="bi bi-plus-square" style="color: green"></i></a></h3>
+</div>
+
+<div class="container">
+    <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between align-items-center" th:each="element : ${category}">
+            <div class="ms-2 me-auto">
+                <span>Id:</span>
+                <span class="fw-bold" th:text="' '+${element.getId()}"></span>
+                <span class="ms-4">Название:</span>
+                <span class="fw-bold" th:text="' '+${element.getName()}"></span>
+            </div>
+            <a class="btn btn-success"  title="Редактировать" data-bs-toggle="modal" th:data-bs-target="'#editCategory'+${element.getId()}" th:data-bs-catName="${element.getName()}"><i class="bi bi-pencil"></i></a>
+            <a class="btn btn-danger ms-1" th:href="@{/admin/category/delete/{id}(id=${element.getId()})}"><i class="bi bi-trash"></i></a>
+
+            <!-- Modal editCategory-->
+            <div class="modal fade"  aria-hidden="true" tabindex="-1" th:id="'editCategory'+${element.getId()}" th:aria-labelledby="'#editCategoryLabel'+${element.getId()}">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" th:id="'editCategoryLabel'+${element.getId()}" th:text="'Радактирование категории: '+${element.getName()}"></h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form th:method="POST" th:action="@{/admin/category/edit/{id}(id=${element.getId()})}" th:object="${categoryNew}">
+                            <div class="modal-body">
+                                <div class="mb-3 row">
+                                    <label for="title" class="col-sm-3 col-form-label">Введите наименование категории:</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" placeholder="Наименование" th:field="*{name}" th:value="${element.getName()}">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                                <button type="submit" class="btn btn-success">Изменить</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <script>
+                let editCategory[[${element.getId()}]] = document.getElementById('editCategory[[${element.getId()}]]')
+                editCategory[[${element.getId()}]].addEventListener('show.bs.modal', event => {
+                    let button = event.relatedTarget
+                    let catName = button.getAttribute('data-bs-catName')
+                    let modalForm = editCategory[[${element.getId()}]].querySelector('form')
+                    let catNameInput = editCategory[[${element.getId()}]].querySelector('.modal-body input#name')
+                    catNameInput.value = catName
+                })
+            </script>
+        </li>
+    </ul>
+</div>
+
+
+<!-- Modal addCategory-->
+<div class="modal fade" id="addCategory" tabindex="-1" aria-labelledby="addCategoryLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="addCategoryLabel">Добавление категории</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:method="POST" th:action="@{/admin/category/add}" th:object="${categoryNew}">
+                <div class="modal-body">
+                    <div class="mb-3 row">
+                        <label for="title" class="col-sm-3 col-form-label">Введите наименование категории:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" th:field="*{name}" placeholder="Наименование" id="title">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="submit" class="btn btn-success">Добавить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+</body>
+</html>
