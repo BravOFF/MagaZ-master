@@ -2,23 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Информация о товаре</title>
-
-
-    <link href="/docs/5.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-
+    <title th:text="'Информация о товаре: ' + ${product.getTitle()}">Информация о товаре</title>
+    <head th:replace="fragments/head"/>
 </head>
 <body>
-<h3>Товар</h3>
-<p th:text="'Наименование: ' + ${product.getTitle()}"></p>
-<p th:text="'Описание: ' + ${product.getDescription()}"></p>
-<p th:text="'Цена: ' + ${product.getPrice()}"></p>
-<p th:text="'Страна производства: ' + ${product.getWarehouse()}"></p>
-<p th:text="'Продавец: ' + ${product.getSeller()}"></p>
-<p th:text="'Производитель: ' + ${product.getCategory().getName()}"></p>
 
-<div th:each="img : ${product.getImageList()}">
-    <img th:src="'/img/' + ${img.getFileName()}" width="300px">
+<div class="container">
+    <div th:replace="fragments/header"></div>
+    <div th:replace="fragments/nav"></div>
+
 </div>
+<div class="container">
+    <h1 th:text="${product.getTitle()}"></h1>
+</div>
+<div class="container mb-4">
+
+    <p th:text="'Наименование: ' + ${product.getTitle()}"></p>
+    <p th:text="'Описание: ' + ${product.getDescription()}"></p>
+    <p th:text="'Цена: ' + ${product.getPrice()}"></p>
+    <p th:text="'Страна производства: ' + ${product.getWarehouse()}"></p>
+    <p th:text="'Продавец: ' + ${product.getSeller()}"></p>
+    <p th:text="'Производитель: ' + ${product.getCategory().getName()}"></p>
+
+    <div th:each="img : ${product.getImageList()}">
+        <img th:src="'/img/' + ${img.getFileName()}" width="300px">
+    </div>
+</div>
+<div th:replace="fragments/footer"></div>
 </body>
 </html>

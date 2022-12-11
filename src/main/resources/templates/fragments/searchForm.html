@@ -1,0 +1,38 @@
+<form th:method="POST" th:action="@{/product/search}">
+  <fieldset>
+    <legend>Выберите параметр для сортировка:</legend>
+    <br>
+    <label for="search">Поиск по наименованию</label>
+    <input name="search" id="search" th:value="*{value_search}">
+    <br>
+    <p>Цена, ₽</p>
+    <label for="ot">От</label>
+    <input type="text" name="ot" id="ot" th:value="*{value_price_ot}">
+    <label for="do">До</label>
+    <input type="text" name="do" id="do" th:value="*{value_price_do}">
+    <br>
+    <br>
+    <div>
+      <label for="ascending_price">Отсортировать по возрастанию цены</label>
+      <input type="radio" id="ascending_price" name="price" value="sorted_by_ascending_price">
+      <br>
+      <br>
+      <label for="descending_price">Отсортировать по убыванию цены</label>
+      <input type="radio" id="descending_price" name="price" value="sorted_by_descending_price">
+      <p>Страна производства: </p>
+
+      <label for="Alize">Alize</label>
+      <input type="radio" id="Alize" name="contact" value="Alize">
+
+      <label for="appliances">Gazzal</label>
+      <input type="radio" id="appliances" name="contact" value="Gazzal">
+
+      <label for="clothes">Schachenmayr</label>
+      <input type="radio" id="clothes" name="contact" value="Schachenmayr">
+      <br>
+      <br>
+      <input type="submit" value="Найти">
+    </div>
+  </fieldset>
+  <br>
+</form>

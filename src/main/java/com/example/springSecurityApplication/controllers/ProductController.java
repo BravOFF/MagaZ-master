@@ -1,5 +1,7 @@
 package com.example.springSecurityApplication.controllers;
 
+import com.example.springSecurityApplication.repositories.CartRepository;
+import com.example.springSecurityApplication.repositories.CategoryRepository;
 import com.example.springSecurityApplication.repositories.ProductRepository;
 import com.example.springSecurityApplication.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +16,18 @@ public class ProductController {
     private final ProductRepository productRepository;
     private final ProductService productService;
 
+    private final CartRepository cartRepository;
+
+    private final CategoryRepository categoryRepository;
+
+
+
     @Autowired
-    public ProductController(ProductRepository productRepository, ProductService productService) {
+    public ProductController(ProductRepository productRepository, ProductService productService, CartRepository cartRepository,CategoryRepository categoryService) {
         this.productRepository = productRepository;
         this.productService = productService;
+        this.cartRepository = cartRepository;
+        this.categoryRepository = categoryService;
     }
 
     @GetMapping("")
@@ -73,6 +83,7 @@ public class ProductController {
         model.addAttribute("value_price_ot", ot);
         model.addAttribute("value_price_do", Do);
         model.addAttribute("products", productService.getAllProduct());
+        model.addAttribute("category", categoryRepository.findAll());
         return "/product/product";
 
     }

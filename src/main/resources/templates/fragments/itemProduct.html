@@ -1,0 +1,12 @@
+<div class="col">
+  <div class="card">
+    <img th:src="'/img/' + ${product.imageList[0].getFileName()}" class="card-img-top">
+    <div class="card-body">
+      <h5 class="card-title" th:text="${product.getTitle()}"></h5>
+      <p class="card-text">This content is a little bit longer.</p>
+    </div>
+    <div class="card-footer bg-transparent border-success">
+      <span th:text="'Цена: ' + ${product.getPrice()}"></span>
+    </div>
+  </div>
+</div>
