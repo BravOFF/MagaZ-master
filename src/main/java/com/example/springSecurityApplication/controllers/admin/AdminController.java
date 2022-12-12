@@ -3,9 +3,12 @@ package com.example.springSecurityApplication.controllers.admin;
 import com.example.springSecurityApplication.models.Category;
 import com.example.springSecurityApplication.models.Image;
 import com.example.springSecurityApplication.models.Product;
+import com.example.springSecurityApplication.models.Order;
 import com.example.springSecurityApplication.repositories.CategoryRepository;
+import com.example.springSecurityApplication.repositories.OrderRepository;
 import com.example.springSecurityApplication.services.CategoryService;
 import com.example.springSecurityApplication.services.ProductService;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -32,12 +37,15 @@ public class AdminController {
     private final CategoryService categoryService;
 
     private final CategoryRepository categoryRepository;
+    private final OrderRepository orderRepository;
 
     @Autowired
-    public AdminController(ProductService productService, CategoryRepository categoryRepository, CategoryService categoryService) {
+    public AdminController(ProductService productService, CategoryRepository categoryRepository, CategoryService categoryService,
+                           OrderRepository orderRepository) {
         this.productService = productService;
         this.categoryRepository = categoryRepository;
         this.categoryService = categoryService;
+        this.orderRepository = orderRepository;
     }
 
         @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
@@ -208,6 +216,25 @@ public class AdminController {
         }
         categoryService.updateCategory(id, category);
         return "redirect:/admin/category";
+    }
+
+    @GetMapping("/orders")
+    public String listOrders(Model model){
+
+        Gson test = new Gson();
+
+        List<Order> listOrders = orderRepository.findAll();
+             for (Order order : listOrders) {
+
+                 test.toJson(order);
+                 System.out.println(order.getNumber());
+
+             }
+
+             System.out.print(test);
+
+        model.addAttribute("orders", orderRepository.findAll());
+        return "admin/orders";
     }
 
 

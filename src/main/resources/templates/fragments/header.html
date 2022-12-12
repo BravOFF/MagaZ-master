@@ -17,6 +17,7 @@
             <nav class="my-2 my-md-0 mr-md-3">
                 <a class="p-2 text-dark" href="#" sec:authorize="hasRole('ROLE_USER')" sec:authentication="name"></a>
                 <a class="p-2 text-dark" href="/admin" sec:authorize="hasRole('ROLE_ADMIN')">Админка</a>
+                <a class="p-2 text-dark" href="/orders" >Заказы</a>
             </nav>
             <form method="post" th:action="@{/logout}">
                 <input type="submit" class="btn btn-sm btn-outline-secondary" value="Выйти">

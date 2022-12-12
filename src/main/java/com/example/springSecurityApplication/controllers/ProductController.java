@@ -33,12 +33,14 @@ public class ProductController {
     @GetMapping("")
     public String getAllProduct(Model model) {
         model.addAttribute("products", productService.getAllProduct());
+        model.addAttribute("category", categoryRepository.findAll());
         return "/product/product";
     }
 
     @GetMapping("/info/{id}")
     public String infoUser(@PathVariable("id") int id, Model model){
         model.addAttribute("product", productService.getProductId(id));
+        model.addAttribute("category", categoryRepository.findAll());
         return "product/infoProduct";
     }
 
@@ -49,25 +51,13 @@ public class ProductController {
                 if(price.equals("sorted_by_ascending_price")){
                     if(!contact.isEmpty())
                     {
-                        if(contact.equals("Alize")){
-                            model.addAttribute("search_product", productRepository.findByTitleAndCategoryOrderByPriceAsc(search.toLowerCase(), Float.parseFloat(ot), Float.parseFloat(Do), 5));
-                        } else if(contact.equals("Gazzal")){
-                            model.addAttribute("search_product", productRepository.findByTitleAndCategoryOrderByPriceAsc(search.toLowerCase(), Float.parseFloat(ot), Float.parseFloat(Do), 6));
-                        }else if(contact.equals("Schachenmayr")){
-                            model.addAttribute("search_product", productRepository.findByTitleAndCategoryOrderByPriceAsc(search.toLowerCase(), Float.parseFloat(ot), Float.parseFloat(Do), 7));
-                        }
+                        model.addAttribute("search_product", productRepository.findByTitleAndCategoryOrderByPriceAsc(search.toLowerCase(), Float.parseFloat(ot), Float.parseFloat(Do), Integer.parseInt(contact)));
                     }
                 }
                 else if (price.equals("sorted_by_descending_price")){
                     if(!contact.isEmpty())
                     {
-                        if(contact.equals("Alize")){
-                            model.addAttribute("search_product", productRepository.findByTitleAndCategoryOrderByPriceDesc(search.toLowerCase(), Float.parseFloat(ot), Float.parseFloat(Do), 5));
-                        } else if(contact.equals("Gazzal")){
-                            model.addAttribute("search_product", productRepository.findByTitleAndCategoryOrderByPriceDesc(search.toLowerCase(), Float.parseFloat(ot), Float.parseFloat(Do), 6));
-                        }else if(contact.equals("Schachenmayr")){
-                            model.addAttribute("search_product", productRepository.findByTitleAndCategoryOrderByPriceDesc(search.toLowerCase(), Float.parseFloat(ot), Float.parseFloat(Do), 7));
-                        }
+                        model.addAttribute("search_product", productRepository.findByTitleAndCategoryOrderByPriceDesc(search.toLowerCase(), Float.parseFloat(ot), Float.parseFloat(Do), Integer.parseInt(contact)));
                     }
                 }
             } else {
@@ -79,9 +69,12 @@ public class ProductController {
             model.addAttribute("search_product", productRepository.findByTitleContainingIgnoreCase(search));
         }
 
+        System.out.print(search);
+
         model.addAttribute("value_search", search);
         model.addAttribute("value_price_ot", ot);
         model.addAttribute("value_price_do", Do);
+        model.addAttribute("value_contact", contact);
         model.addAttribute("products", productService.getAllProduct());
         model.addAttribute("category", categoryRepository.findAll());
         return "/product/product";

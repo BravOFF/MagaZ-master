@@ -19,18 +19,13 @@
       <br>
       <label for="descending_price">Отсортировать по убыванию цены</label>
       <input type="radio" id="descending_price" name="price" value="sorted_by_descending_price">
-      <p>Страна производства: </p>
+      <p>Производитель:</p>
 
-      <label for="Alize">Alize</label>
-      <input type="radio" id="Alize" name="contact" value="Alize">
+      <div th:each="element : ${category}">
+      <label th:for="'cat'+${element.getId()}" th:text="${element.getName()}"></label>
+      <input type="radio" name="contact" th:id="'cat'+${element.getId()}" th:value="${element.getId()}">
+      </div>
 
-      <label for="appliances">Gazzal</label>
-      <input type="radio" id="appliances" name="contact" value="Gazzal">
-
-      <label for="clothes">Schachenmayr</label>
-      <input type="radio" id="clothes" name="contact" value="Schachenmayr">
-      <br>
-      <br>
       <input type="submit" value="Найти">
     </div>
   </fieldset>
