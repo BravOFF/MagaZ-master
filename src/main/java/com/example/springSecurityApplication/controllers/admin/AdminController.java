@@ -22,6 +22,7 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -223,15 +224,39 @@ public class AdminController {
 
         Gson test = new Gson();
 
-        List<Order> listOrders = orderRepository.findAll();
-             for (Order order : listOrders) {
+        List<String> listOrders = orderRepository.findAllGroupByNumber();
+        ArrayList allOrd = new ArrayList();
+        System.out.println(listOrders.toString());
+             for (String order : listOrders) {
+                 Date data = new Date();
+                 ArrayList ord = new ArrayList();
+                 System.out.println("---");
+                 System.out.print(order);
+                 Gson t = new Gson();
 
-                 test.toJson(order);
-                 System.out.println(order.getNumber());
+                 List<Order> lOrders = orderRepository.findOrderByNumber(order);
+                 for (Order or : lOrders) {
+//                     data.setTime(or.getDateTime());
+                     ArrayList collection = new ArrayList();
+                     collection.add(or.getDateTime());
+                     collection.add(or.getProduct().getId());
+                     collection.add(or.getProduct().getTitle());
+                     collection.add(or.getCount());
+                     collection.add(or.getPrice());
 
+                     ord.add(collection);
+
+                     System.out.println("  "+or.getDateTime());
+                     System.out.println("  "+or.getProduct().getTitle()+" "+or.getCount()+"  "+or.getPrice());
+                 }
+                 allOrd.add(Integer.parseInt(order), ord);
+
+
+
+                 System.out.println("---");
              }
+             System.out.println(allOrd.toString());
 
-             System.out.print(test);
 
         model.addAttribute("orders", orderRepository.findAll());
         return "admin/orders";
