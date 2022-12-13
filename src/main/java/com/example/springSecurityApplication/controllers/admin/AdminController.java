@@ -4,6 +4,7 @@ import com.example.springSecurityApplication.models.Category;
 import com.example.springSecurityApplication.models.Image;
 import com.example.springSecurityApplication.models.Product;
 import com.example.springSecurityApplication.models.Order;
+import com.example.springSecurityApplication.enumm.Status;
 import com.example.springSecurityApplication.repositories.CategoryRepository;
 import com.example.springSecurityApplication.repositories.OrderRepository;
 import com.example.springSecurityApplication.services.CategoryService;
@@ -24,8 +25,6 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,6 +35,8 @@ public class AdminController {
 
     @Value("${upload.path}")
     private String uploadPath;
+
+    private Status statusObj;
 
     private final ProductService productService;
     private final CategoryService categoryService;
@@ -223,68 +224,69 @@ public class AdminController {
     }
 
     @GetMapping("/orders")
-    public String listOrders(Model model){
-
-
+    public String listOrders(Model model) {
         List<String> listOrders = orderRepository.findAllGroupByNumber();
-
-
         JSONArray jPordArr = new JSONArray();
 
-//        System.out.println(listOrders.toString());
-             for (String order : listOrders) {
-                 LocalDateTime data = null;
-                 String Status = null;
-                 JSONObject jPordObj = new JSONObject();
-                 JSONArray jProd = new JSONArray();
+        String Status = null;
+        for (String order : listOrders) {
+            LocalDateTime data = null;
+            Status = null;
+            Integer sumCount = 0;
+            float sumPrice = 0;
+            JSONObject jPordObj = new JSONObject();
+            JSONArray jProd = new JSONArray();
 
-                 System.out.println("---");
-                 System.out.print(order);
+            List<Order> lOrders = orderRepository.findOrderByNumber(order);
+            for (Order or : lOrders) {
+                data = or.getDateTime();
+                Status = String.valueOf(or.getStatus());
 
+                sumCount = sumCount + or.getCount();
+                sumPrice = sumPrice + or.getPrice();
 
+                JSONObject ja = new JSONObject();
+                ja.put("data", or.getDateTime());
+                ja.put("id", or.getProduct().getId());
+                ja.put("name", or.getProduct().getTitle());
+                ja.put("count", or.getCount());
+                ja.put("price", or.getPrice());
 
-                 List<Order> lOrders = orderRepository.findOrderByNumber(order);
-                 for (Order or : lOrders) {
-                     data = or.getDateTime();
-                     Status = String.valueOf(or.getStatus());
-                     JSONObject ja = new JSONObject();
-                     ja.put("data", or.getDateTime());
-                     ja.put("id", or.getProduct().getId());
-                     ja.put("name", or.getProduct().getTitle());
-                     ja.put("count", or.getCount());
-                     ja.put("price", or.getPrice());
+                jProd.put(ja);
+                ja = null;
+            }
 
-                     jProd.put(ja);
-                     ja = null;
+            jPordObj.put("num", order);
+            jPordObj.put("date", data);
+            jPordObj.put("Status", Status);
+            jPordObj.put("sumCount", sumCount);
+            jPordObj.put("sumPrice", sumPrice);
+            jPordObj.put("products", jProd);
+            data = null;
+            Status = null;
+            jProd = null;
 
+            jPordArr.put(jPordObj);
+            jPordObj = null;
+        }
 
-                     System.out.println("  "+or.getDateTime());
-                     System.out.println("  "+or.getProduct().getTitle()+" "+or.getCount()+"  "+or.getPrice());
-                 }
-
-                 jPordObj.put("num", order);
-                 jPordObj.put("date", data);
-                 jPordObj.put("Status", Status);
-                 jPordObj.put("products", jProd);
-                 data = null;
-                 Status = null;
-                 jProd = null;
-
-                 jPordArr.put(jPordObj);
-                 jPordObj = null;
-
-                 System.out.println("---");
-             }
-
-             System.out.println(jPordArr.toString());
-
-
+        JSONArray jStatusdArr = new JSONArray();
+        for (Status st : statusObj.values()){
+            jStatusdArr.put(st);
+            System.out.println(st);
+        }
 
         model.addAttribute("ordersObj", jPordArr.toList());
         model.addAttribute("orders", orderRepository.findAll());
+        model.addAttribute("statusObj", jStatusdArr);
         return "admin/orders";
     }
 
+    @PostMapping("/order/editStatus/{id}")
+    public String editOrderStatus(@ModelAttribute("status") int status, BindingResult bindingResult, @PathVariable("id") String id) {
 
+        orderRepository.editOrderStatus(id, status);
+        return "redirect:/admin/orders";
+    }
 }
 

@@ -18,4 +18,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 //    List<Order> getAllBy();
     @Query(value = "select number from orders group by \"number\"", nativeQuery = true)
     List<String> findAllGroupByNumber();
+    @Query(value = "update orders set status = ?1 where number = '?2'", nativeQuery = true)
+    List<String> editOrderStatus(String num, int status);
 }

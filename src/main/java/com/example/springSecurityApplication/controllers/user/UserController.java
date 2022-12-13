@@ -114,7 +114,7 @@ public class UserController {
 
         String uuid = UUID.randomUUID().toString();
         for (Product product: productsList){
-            Order newOrder = new Order(uuid, product, personDetails.getPerson(), 1, product.getPrice(), Status.Получен);
+            Order newOrder = new Order(uuid, product, personDetails.getPerson(), 1, product.getPrice(), Status.Принят);
             orderRepository.save(newOrder);
             cartRepository.deleteCartByProductId(product.getId());
         }
