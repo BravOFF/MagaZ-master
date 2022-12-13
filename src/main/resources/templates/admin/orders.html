@@ -8,8 +8,18 @@
 <body>
 <div th:replace="fragments/headerAdmin"></div>
 
-<div class="container">
-    <h3>Список заказов</h3>
+<div class="container mb-3">
+    <div class="row">
+        <div class="col-4">
+            <h3>Список заказов</h3>
+        </div>
+        <div class="col-5 ms-auto">
+            <form class="d-flex" th:method="POST" th:action="@{/admin/orders/}" th:object="${categoryNew}">
+                <input class="form-control mr-2" name="q" type="search" placeholder="Поиск" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Искать</button>
+            </form>
+        </div>
+    </div>
 </div>
 
 <div class="container">
@@ -63,7 +73,7 @@
                                 <div class="mb-3 row">
                                     <label for="title" class="col-sm-3 col-form-label">Статус:</label>
                                     <div class="col-sm-9">
-                                        <select class="form-select" aria-label="Default select example">
+                                        <select name="statusF" class="form-select" aria-label="Default select example">
                                             <option th:each="st,iterStat : ${statusObj}" th:value="${iterStat.index}" th:text="${st}"></option>
                                         </select>
                                     </div>

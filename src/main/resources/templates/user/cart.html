@@ -17,16 +17,35 @@
 </div>
 
 <div class="container mb-4">
-<div th:each="product : ${cart_product}">
-    <img th:src="'/img/' + ${product.imageList[0].getFileName()}" width="300px">
-    <br>
-    <a th:href="@{/product/info/{id}(id=${product.getId()})}" th:text="${product.getTitle()}"></a>
-    <p th:text="'Цена: ' + ${product.getPrice()}"></p>
-    <a th:href="@{/cart/delete/{id}(id=${product.getId()})}">Удалить</a>
-    <hr>
+<div class="row row-cols-1 row-cols-md-4 g-4">
+    <div  class="col" th:each="product : ${cart_product}">
+        <div class="card">
+            <a class="block-img" th:href="@{/product/info/{id}(id=${product.getId()})}">
+                <img th:src="'/img/' + ${product.imageList[0].getFileName()}" class="card-img-top">
+            </a>
+            <div class="card-body">
+                <a class="card-title" th:href="@{/product/info/{id}(id=${product.getId()})}" th:text="${product.getTitle()}"></a>
+                <p class="card-text">
+                    <span class="card-text" th:text="'Страна производства: ' + ${product.getWarehouse()}"></span><br>
+                    <span class="card-text" th:text="'Продавец: ' + ${product.getSeller()}"></span><br>
+                    <span class="card-text" th:text="'Производитель: ' + ${product.getCategory().getName()}"></span>
+                </p>
+
+            </div>
+            <div class="card-footer bg-transparent" style="display: flex; justify-content: space-between;">
+                <span th:text="'Цена: ' + ${product.getPrice()}"></span>
+
+                <a th:href="@{/cart/delete/{id}(id=${product.getId()})}">Удалить</a>
+
+            </div>
+        </div>
+    </div>
 </div>
+</div>
+<div class="container mb-4">
+
 <h3 th:text="'Итоговая цена: ' + ${price}"></h3>
-<a href="/order/create">Оформить заказ</a>
+<a class="btn btn-success btn-lg" href="/order/create">Оформить заказ</a>
 </div>
 <div th:replace="fragments/footer"></div>
 </body>

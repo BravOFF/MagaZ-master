@@ -273,7 +273,7 @@ public class AdminController {
         JSONArray jStatusdArr = new JSONArray();
         for (Status st : statusObj.values()){
             jStatusdArr.put(st);
-            System.out.println(st);
+//            System.out.println(st);
         }
 
         model.addAttribute("ordersObj", jPordArr.toList());
@@ -282,11 +282,75 @@ public class AdminController {
         return "admin/orders";
     }
 
-    @PostMapping("/orders/editStatus/{id}")
-    public String editOrderStatus(@ModelAttribute("status") int status, BindingResult bindingResult, @PathVariable("id") String id) {
+    @PostMapping("/orders/editstatus/{id}")
+    public String editOrderStatus(@ModelAttribute("statusF") int statusF, BindingResult bindingResult, @PathVariable("id") String id) {
 
-        orderRepository.editOrderStatus(id, status);
+//        System.out.println(statusF);
+//        System.out.println(id);
+
+        orderRepository.editOrderStatus(statusF, id);
         return "redirect:/admin/orders";
     }
+    @PostMapping("/orders")
+    public String SearchByNun(@ModelAttribute("q") String queryString,Model model){
+
+        List<String> listOrders = orderRepository.findByQueryNum(queryString);
+        JSONArray jPordArr = new JSONArray();
+
+        String Status = null;
+        for (String order : listOrders) {
+            LocalDateTime data = null;
+            Status = null;
+            Integer sumCount = 0;
+            float sumPrice = 0;
+            JSONObject jPordObj = new JSONObject();
+            JSONArray jProd = new JSONArray();
+
+            List<Order> lOrders = orderRepository.findOrderByNumber(order);
+            for (Order or : lOrders) {
+                data = or.getDateTime();
+                Status = String.valueOf(or.getStatus());
+
+                sumCount = sumCount + or.getCount();
+                sumPrice = sumPrice + or.getPrice();
+
+                JSONObject ja = new JSONObject();
+                ja.put("data", or.getDateTime());
+                ja.put("id", or.getProduct().getId());
+                ja.put("name", or.getProduct().getTitle());
+                ja.put("count", or.getCount());
+                ja.put("price", or.getPrice());
+
+                jProd.put(ja);
+                ja = null;
+            }
+
+            jPordObj.put("num", order);
+            jPordObj.put("date", data);
+            jPordObj.put("Status", Status);
+            jPordObj.put("sumCount", sumCount);
+            jPordObj.put("sumPrice", sumPrice);
+            jPordObj.put("products", jProd);
+            data = null;
+            Status = null;
+            jProd = null;
+
+            jPordArr.put(jPordObj);
+            jPordObj = null;
+        }
+
+        JSONArray jStatusdArr = new JSONArray();
+        for (Status st : statusObj.values()){
+            jStatusdArr.put(st);
+//            System.out.println(st);
+        }
+
+        model.addAttribute("ordersObj", jPordArr.toList());
+        model.addAttribute("orders", orderRepository.findAll());
+        model.addAttribute("statusObj", jStatusdArr);
+        return "admin/orders";
+    }
+
+
 }
 

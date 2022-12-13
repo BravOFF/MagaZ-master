@@ -16,15 +16,52 @@
 </div>
 
 <div class="container mb-4">
-    <div th:each="order : ${orders}">
-        <h3 th:text="'Заказ № ' + ${order.getNumber()}"></h3>
-        <img th:src="'/img/' + ${order.getProduct().imageList[0].getFileName()}" width="300px">
-        <p th:text="'Наименование: ' + ${order.getProduct().getTitle()}"></p>
-        <p th:text="'Количество: ' + ${order.getCount()}"></p>
-        <p th:text="'Цена: ' + ${order.getPrice()}"></p>
-        <p th:text="'Дата заказа: ' + ${#temporals.format(order.getDateTime(), 'dd-MMM-yyyy')}"></p>
-        <p th:text="'Статус: ' + ${order.getStatus()}">
+
+    <div class="container">
+
+
+        <div class="card mb-4" th:each="order,iterStat : ${ordersObj}">
+            <h5 class="card-header"><small class="text-info">Заказ №</small> <span th:text="${order.num}"></span> <small class="text-info">от </small> <span th:text="${#temporals.format(order.date, 'dd-MMM-yyyy')}"></span> - <span class="text-success" th:text="${order.Status}"></span></h5>
+            <div class="card-body">
+                <h5 class="card-title">Список товаров</h5>
+
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Название</th>
+                        <th scope="col">Количество</th>
+                        <th scope="col">Стоимость</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="product : ${order.products}">
+                        <td th:text="${product.id}"></td>
+                        <td th:text="${product.name}"></td>
+                        <td th:text="${product.count}"></td>
+                        <td th:text="${product.price}"></td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr style="font-weight: bold; ">
+                        <td style="border: none;"></td>
+                        <td style="border: none;">Итого:</td>
+                        <td style="border: none;" th:text="${order.sumCount}"></td>
+                        <td style="border: none;" th:text="${order.sumPrice}"></td>
+                    </tr>
+                    </tfoot>
+                </table>
+
+            </div>
+        </div>
+
+
+
     </div>
+
+
+<!--        <img th:src="'/img/' + ${order.getProduct().imageList[0].getFileName()}" width="300px">-->
+
 </div>
 </body>
 </html>
