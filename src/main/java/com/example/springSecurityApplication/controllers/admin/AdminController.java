@@ -8,7 +8,9 @@ import com.example.springSecurityApplication.repositories.CategoryRepository;
 import com.example.springSecurityApplication.repositories.OrderRepository;
 import com.example.springSecurityApplication.services.CategoryService;
 import com.example.springSecurityApplication.services.ProductService;
-import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -222,42 +225,62 @@ public class AdminController {
     @GetMapping("/orders")
     public String listOrders(Model model){
 
-        Gson test = new Gson();
 
         List<String> listOrders = orderRepository.findAllGroupByNumber();
-        ArrayList allOrd = new ArrayList();
-        System.out.println(listOrders.toString());
+
+
+        JSONArray jPordArr = new JSONArray();
+
+//        System.out.println(listOrders.toString());
              for (String order : listOrders) {
-                 Date data = new Date();
-                 ArrayList ord = new ArrayList();
+                 LocalDateTime data = null;
+                 String Status = null;
+                 JSONObject jPordObj = new JSONObject();
+                 JSONArray jProd = new JSONArray();
+
                  System.out.println("---");
                  System.out.print(order);
-                 Gson t = new Gson();
+
+
 
                  List<Order> lOrders = orderRepository.findOrderByNumber(order);
                  for (Order or : lOrders) {
-//                     data.setTime(or.getDateTime());
-                     ArrayList collection = new ArrayList();
-                     collection.add(or.getDateTime());
-                     collection.add(or.getProduct().getId());
-                     collection.add(or.getProduct().getTitle());
-                     collection.add(or.getCount());
-                     collection.add(or.getPrice());
+                     data = or.getDateTime();
+                     Status = String.valueOf(or.getStatus());
+                     JSONObject ja = new JSONObject();
+                     ja.put("data", or.getDateTime());
+                     ja.put("id", or.getProduct().getId());
+                     ja.put("name", or.getProduct().getTitle());
+                     ja.put("count", or.getCount());
+                     ja.put("price", or.getPrice());
 
-                     ord.add(collection);
+                     jProd.put(ja);
+                     ja = null;
+
 
                      System.out.println("  "+or.getDateTime());
                      System.out.println("  "+or.getProduct().getTitle()+" "+or.getCount()+"  "+or.getPrice());
                  }
-                 allOrd.add(Integer.parseInt(order), ord);
 
+                 jPordObj.put("num", order);
+                 jPordObj.put("date", data);
+                 jPordObj.put("Status", Status);
+                 jPordObj.put("products", jProd);
+                 data = null;
+                 Status = null;
+                 jProd = null;
 
+                 jPordArr.put(jPordObj);
+                 jPordObj = null;
 
                  System.out.println("---");
              }
-             System.out.println(allOrd.toString());
+
+             System.out.println(jPordArr.toString());
 
 
+
+        model.addAttribute("ordersObj", jPordArr.toList());
         model.addAttribute("orders", orderRepository.findAll());
         return "admin/orders";
     }
