@@ -282,7 +282,7 @@ public class AdminController {
         return "admin/orders";
     }
 
-    @PostMapping("/order/editStatus/{id}")
+    @PostMapping("/orders/editStatus/{id}")
     public String editOrderStatus(@ModelAttribute("status") int status, BindingResult bindingResult, @PathVariable("id") String id) {
 
         orderRepository.editOrderStatus(id, status);
